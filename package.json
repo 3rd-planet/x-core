@@ -1,0 +1,25 @@
+{
+  "name": "@3rdplanet/x-core",
+  "version": "1.0.0",
+  "description": "core for framework-x",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3rd-planet/x-core.git"
+  },
+  "keywords": [
+    "node",
+    "api",
+    "framework-x",
+    "express.js"
+  ],
+  "author": "msamgan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3rd-planet/x-core/issues"
+  },
+  "homepage": "https://github.com/3rd-planet/x-core#readme"
+}
