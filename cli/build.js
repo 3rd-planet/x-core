@@ -1,6 +1,6 @@
 const fs = require("fs")
 const path = require("path")
-const rootPath = path.join(__dirname, "../../../../")
+const { rootPath } = require("../paths")
 
 const builder = async (filePath, stubName) => {
     if (fs.existsSync(filePath)) {
@@ -15,7 +15,7 @@ const builder = async (filePath, stubName) => {
 
     const dir = dirs.join("/")
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, {recursive: true})
+        fs.mkdirSync(dir, { recursive: true })
     }
 
     return fs.writeFile(filePath, stub, (err) => {
@@ -51,7 +51,7 @@ exports.buildRepository = async (name) => {
     let repoDir = path.join(rootPath, "repositories")
 
     if (!fs.existsSync(repoDir)) {
-        fs.mkdirSync(repoDir, {recursive: true})
+        fs.mkdirSync(repoDir, { recursive: true })
     }
 
     const filePath = path.join(repoDir, `${name}.repository.js`)
@@ -79,5 +79,19 @@ exports.buildMiddleware = async (name) => {
 
     if (await builder(filePath, "middleware.stubs")) {
         console.log(`Middleware ${name}.middleware.js created successfully`)
+    }
+}
+
+exports.buildCommand = async (name) => {
+    let repoDir = path.join(rootPath, "commands")
+
+    if (!fs.existsSync(repoDir)) {
+        fs.mkdirSync(repoDir, { recursive: true })
+    }
+
+    const filePath = path.join(repoDir, `${name}.js`)
+
+    if (await builder(filePath, "command.stubs")) {
+        console.log(`Command ${name}.js created successfully`)
     }
 }
