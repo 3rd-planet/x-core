@@ -10,9 +10,9 @@ const builder = async (filePath, stubName) => {
 
     let userStubsFile = path.join(rootPath, "stubs", stubName)
 
-    let stub = fs.existsSync(userStubsFile) ?
-        fs.readFileSync(userStubsFile, "utf8") :
-        fs.readFileSync(path.join(__dirname, "../stubs/" + stubName), "utf8")
+    let stub = fs.existsSync(userStubsFile)
+        ? fs.readFileSync(userStubsFile, "utf8")
+        : fs.readFileSync(path.join(__dirname, "../stubs/" + stubName), "utf8")
 
     let dirs = filePath.split("/")
     dirs.pop()
