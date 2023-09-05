@@ -9,8 +9,5 @@ exports.command = (program) => {
             console.log(`Building Route: ${routeName}`)
             await buildRoute(routeName)
             console.info(`Route ${routeName} built.`)
-            console.info(`Add the following to your index.js:`)
-            console.info(`    const ${routeName}Routes = require("./routes/${routeName}.route")`)
-            console.info(`    app.use("/${routeName}", ${routeName}Routes)`)
         })
 }
