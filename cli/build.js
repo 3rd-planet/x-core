@@ -10,9 +10,9 @@ const builder = async (filePath, stubName) => {
 
     let userStubsFile = path.join(rootPath, "stubs", stubName)
 
-    let stub = fs.existsSync(userStubsFile) ?
-        fs.readFileSync(userStubsFile, "utf8") :
-        fs.readFileSync(path.join(__dirname, "../stubs/" + stubName), "utf8")
+    let stub = fs.existsSync(userStubsFile)
+        ? fs.readFileSync(userStubsFile, "utf8")
+        : fs.readFileSync(path.join(__dirname, "../stubs/" + stubName), "utf8")
 
     let dirs = filePath.split("/")
     dirs.pop()
@@ -66,7 +66,7 @@ exports.buildRepository = async (name) => {
 }
 
 /**
- *
+ * Creates a validator file for the given validator name.
  * @param name
  * @returns {Promise<void>}
  */
@@ -78,6 +78,11 @@ exports.buildValidator = async (name) => {
     }
 }
 
+/**
+ * Creates a middleware file for the given middleware name.
+ * @param name
+ * @returns {Promise<void>}
+ */
 exports.buildMiddleware = async (name) => {
     const filePath = path.join(rootPath, "middlewares", `${name}.middleware.js`)
 
@@ -86,6 +91,11 @@ exports.buildMiddleware = async (name) => {
     }
 }
 
+/**
+ * Creates a command file for the given command name.
+ * @param name
+ * @returns {Promise<void>}
+ */
 exports.buildCommand = async (name) => {
     let repoDir = path.join(rootPath, "commands")
 
@@ -97,5 +107,18 @@ exports.buildCommand = async (name) => {
 
     if (await builder(filePath, "command.stubs")) {
         console.log(`Command ${name}.js created successfully`)
+    }
+}
+
+/**
+ * Creates a route file for the given route name.
+ * @param name
+ * @returns {Promise<void>}
+ */
+exports.buildRoute = async (name) => {
+    const filePath = path.join(rootPath, "routes", `${name}.route.js`)
+
+    if (await builder(filePath, "route.stubs")) {
+        console.log(`Route ${name}.route.js created successfully`)
     }
 }

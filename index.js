@@ -12,15 +12,13 @@ exports.init = async (program) => {
 
     let commands = require("fs").readdirSync(__dirname + "/commands")
     commands.forEach((command) => {
-            require(__dirname + "/commands/" + command).command(program)
-        }
-    )
+        require(__dirname + "/commands/" + command).command(program)
+    })
 
     if (fs.existsSync(rootPath + "/commands")) {
         let userCommands = require("fs").readdirSync(rootPath + "commands")
         userCommands.forEach((command) => {
-                require(rootPath + "/commands/" + command).command(program)
-            }
-        )
+            require(rootPath + "/commands/" + command).command(program)
+        })
     }
 }
