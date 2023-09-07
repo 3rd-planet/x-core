@@ -1,6 +1,6 @@
 const fs = require("fs")
 const path = require("path")
-const { rootPath } = require("../paths")
+const { rootPath, appPath, packagePath } = require("../paths")
 
 const builder = async (filePath, stubName) => {
     if (fs.existsSync(filePath)) {
@@ -12,7 +12,7 @@ const builder = async (filePath, stubName) => {
 
     let stub = fs.existsSync(userStubsFile)
         ? fs.readFileSync(userStubsFile, "utf8")
-        : fs.readFileSync(path.join(__dirname, "../stubs/" + stubName), "utf8")
+        : fs.readFileSync(path.join(packagePath, "stubs/" + stubName), "utf8")
 
     let dirs = filePath.split("/")
     dirs.pop()
@@ -39,7 +39,7 @@ const builder = async (filePath, stubName) => {
  * @returns None
  */
 exports.buildController = async (name) => {
-    const filePath = path.join(rootPath, "controllers", `${name}.controller.js`)
+    const filePath = path.join(appPath, "controllers", `${name}.controller.js`)
 
     if (await builder(filePath, "controller.stubs")) {
         console.log(`Controller ${name}.controller.js created successfully`)
@@ -52,7 +52,7 @@ exports.buildController = async (name) => {
  * @returns None
  */
 exports.buildRepository = async (name) => {
-    let repoDir = path.join(rootPath, "repositories")
+    let repoDir = path.join(appPath, "repositories")
 
     if (!fs.existsSync(repoDir)) {
         fs.mkdirSync(repoDir, { recursive: true })
@@ -71,7 +71,7 @@ exports.buildRepository = async (name) => {
  * @returns {Promise<void>}
  */
 exports.buildValidator = async (name) => {
-    const filePath = path.join(rootPath, "middlewares/validators", `${name}.validations.js`)
+    const filePath = path.join(appPath, "middlewares/validators", `${name}.validations.js`)
 
     if (await builder(filePath, "validator.stubs")) {
         console.log(`Validator ${name}.validation.js created successfully`)
@@ -84,7 +84,7 @@ exports.buildValidator = async (name) => {
  * @returns {Promise<void>}
  */
 exports.buildMiddleware = async (name) => {
-    const filePath = path.join(rootPath, "middlewares", `${name}.middleware.js`)
+    const filePath = path.join(appPath, "middlewares", `${name}.middleware.js`)
 
     if (await builder(filePath, "middleware.stubs")) {
         console.log(`Middleware ${name}.middleware.js created successfully`)
@@ -97,7 +97,7 @@ exports.buildMiddleware = async (name) => {
  * @returns {Promise<void>}
  */
 exports.buildCommand = async (name) => {
-    let repoDir = path.join(rootPath, "commands")
+    let repoDir = path.join(appPath, "commands")
 
     if (!fs.existsSync(repoDir)) {
         fs.mkdirSync(repoDir, { recursive: true })
