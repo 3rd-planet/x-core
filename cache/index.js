@@ -1,5 +1,10 @@
 const { createClient } = require("redis")
-const { CACHE_EXPIRE_TIME, CACHE_UPDATE_INTERVAL, CACHE_ENABLED, CACHE_KEY_PREFIX } = require("../helpers/constants")
+const {
+    CACHE_EXPIRE_TIME,
+    CACHE_UPDATE_INTERVAL,
+    CACHE_ENABLED,
+    CACHE_KEY_PREFIX
+} = require("../helpers/constants")
 
 /**
  * Check if the cache is enabled.
