@@ -43,14 +43,15 @@ exports.prepareCacheKey = (key) => {
  * // RedisClient {}
  */
 exports.getCacheClient = async (config = null) => {
-
-    let redisConfig = config ? config : {
-        host: process.env.REDIS_HOST,
-        port: process.env.REDIS_PORT,
-        username: process.env.REDIS_USERNAME,
-        password: process.env.REDIS_PASSWORD,
-        database: process.env.REDIS_DB
-    }
+    let redisConfig = config
+        ? config
+        : {
+              host: process.env.REDIS_HOST,
+              port: process.env.REDIS_PORT,
+              username: process.env.REDIS_USERNAME,
+              password: process.env.REDIS_PASSWORD,
+              database: process.env.REDIS_DB
+          }
 
     const client = createClient(redisConfig)
     client.on("error", (err) => console.log("Redis Client Error", err))
