@@ -31,7 +31,7 @@ exports.cacheUpdateInterval = () => {
 }
 
 exports.prepareCacheKey = (key) => {
-    return CACHE_KEY_PREFIX + "-" + key
+    return CACHE_KEY_PREFIX + ":" + key
 }
 
 /**
@@ -42,8 +42,17 @@ exports.prepareCacheKey = (key) => {
  * getCacheClient()
  * // RedisClient {}
  */
-exports.getCacheClient = async () => {
-    const client = createClient()
+exports.getCacheClient = async (config = null) => {
+
+    let redisConfig = config ? config : {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+        database: process.env.REDIS_DB
+    }
+
+    const client = createClient(redisConfig)
     client.on("error", (err) => console.log("Redis Client Error", err))
     await client.connect()
 
@@ -61,24 +70,22 @@ exports.getCacheClient = async () => {
  *
  */
 exports.getCache = async (key, updateAccess = true) => {
-    if (!this.isCacheEnabled()) {
-        return null
-    }
+    if (!this.isCacheEnabled()) return null
+
+    let preparedKey = this.prepareCacheKey(key)
 
     const client = await this.getCacheClient()
-    const cache = await client.get(key)
+    const cache = await client.get(preparedKey)
 
-    if (!cache) {
-        return null
-    }
+    if (!cache) return null
 
-    if (updateAccess) {
-        this.updateCacheAccess(JSON.parse(cache))
-    }
+    let jsonParsedCache = JSON.parse(cache)
+
+    if (updateAccess) this.updateCacheAccess(jsonParsedCache)
 
     client.disconnect()
 
-    return JSON.parse(cache)
+    return jsonParsedCache
 }
 
 /**
@@ -104,32 +111,29 @@ exports.setCacheData = (key, response) => {
  * @param key
  * @param value
  * @param updater
- * @param setData
- * @param internalCall
  * @returns {Promise<void>}
  */
-exports.setCache = async (key, value, updater = null, setData = true, internalCall = false) => {
-    if (!this.isCacheEnabled()) {
-        return
-    }
+exports.setCache = async (key, value, updater = null) => {
+    if (!this.isCacheEnabled()) return
 
-    if (setData) {
-        value = this.setCacheData(key, value)
-    }
+    let preparedKey = this.prepareCacheKey(key)
 
     const client = await this.getCacheClient()
+    await client.set(preparedKey, JSON.stringify(this.setCacheData(preparedKey, value)))
 
-    if (updater) {
-        await client.set(key, JSON.stringify(value))
-        this.setUpdater(key, updater.function, updater.params)
-    }
+    if (updater) this.setUpdater(key, updater.function, updater.params)
 
-    if (!internalCall && !updater) {
-        await client.set(key, JSON.stringify(value), {
-            EX: CACHE_EXPIRE_TIME / 1000
-        })
-    }
+    client.disconnect()
+}
 
+/**
+ * Update cache.
+ * @param cache
+ * @returns {Promise<void>}
+ */
+exports.reUpdateCache = async (cache) => {
+    const client = await this.getCacheClient()
+    await client.set(cache.key, JSON.stringify(cache))
     client.disconnect()
 }
 
@@ -143,7 +147,7 @@ exports.setCache = async (key, value, updater = null, setData = true, internalCa
  */
 exports.updateCacheAccess = async (cache) => {
     cache.last_accessed = new Date()
-    await this.setCache(cache.key, cache, null, false, true)
+    await this.reUpdateCache(cache)
 }
 
 /**
@@ -156,13 +160,12 @@ exports.updateCacheAccess = async (cache) => {
  * updateCacheResponse(cache, response)
  */
 exports.updateCacheResponse = async (cache, response) => {
-    if (!cache) {
-        return
-    }
+    if (!cache) return
 
     cache.last_updated = new Date()
     cache.response = response
-    await this.setCache(cache.key, cache, null, false, true)
+
+    await this.reUpdateCache(cache)
 }
 
 /**
@@ -188,12 +191,11 @@ exports.eligibleForDelete = (cache) => {
  * // cache || null
  */
 exports.eligibleForUpdate = async (cache) => {
-    if (!cache) {
-        return null
-    }
+    if (!cache) return null
 
     if (this.eligibleForDelete(cache)) {
         await this.deleteCache(cache)
+
         return null
     }
 
@@ -213,9 +215,7 @@ exports.setUpdater = (key, updaterFunction, parameters) => {
     let cacheUpdater = setInterval(async () => {
         let cache = await this.eligibleForUpdate(await this.getCache(key, false))
 
-        if (!cache) {
-            clearInterval(cacheUpdater)
-        }
+        if (!cache) clearInterval(cacheUpdater)
 
         await this.updateCacheResponse(cache, await updaterFunction(...parameters))
     }, this.cacheUpdateInterval())
