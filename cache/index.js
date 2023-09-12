@@ -31,7 +31,7 @@ exports.cacheUpdateInterval = () => {
 }
 
 exports.prepareCacheKey = (key) => {
-    return CACHE_KEY_PREFIX + "-" + key
+    return CACHE_KEY_PREFIX + ":" + key
 }
 
 /**
@@ -72,8 +72,10 @@ exports.getCacheClient = async (config = null) => {
 exports.getCache = async (key, updateAccess = true) => {
     if (!this.isCacheEnabled()) return null
 
+    let preparedKey = this.prepareCacheKey(key)
+
     const client = await this.getCacheClient()
-    const cache = await client.get(key)
+    const cache = await client.get(preparedKey)
 
     if (!cache) return null
 
@@ -114,8 +116,10 @@ exports.setCacheData = (key, response) => {
 exports.setCache = async (key, value, updater = null) => {
     if (!this.isCacheEnabled()) return
 
+    let preparedKey = this.prepareCacheKey(key)
+
     const client = await this.getCacheClient()
-    await client.set(key, JSON.stringify(this.setCacheData(key, value)))
+    await client.set(preparedKey, JSON.stringify(this.setCacheData(preparedKey, value)))
 
     if (updater) this.setUpdater(key, updater.function, updater.params)
 
