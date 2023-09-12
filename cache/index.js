@@ -1,4 +1,4 @@
-const {createClient} = require("redis")
+const { createClient } = require("redis")
 const {
     CACHE_EXPIRE_TIME,
     CACHE_UPDATE_INTERVAL,
@@ -42,8 +42,17 @@ exports.prepareCacheKey = (key) => {
  * getCacheClient()
  * // RedisClient {}
  */
-exports.getCacheClient = async () => {
-    const client = createClient()
+exports.getCacheClient = async (config = null) => {
+
+    let redisConfig = config ? config : {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+        database: process.env.REDIS_DB
+    }
+
+    const client = createClient(redisConfig)
     client.on("error", (err) => console.log("Redis Client Error", err))
     await client.connect()
 
@@ -100,8 +109,6 @@ exports.setCacheData = (key, response) => {
  * @param key
  * @param value
  * @param updater
- * @param setData
- * @param internalCall
  * @returns {Promise<void>}
  */
 exports.setCache = async (key, value, updater = null) => {
@@ -118,7 +125,6 @@ exports.setCache = async (key, value, updater = null) => {
 /**
  * Update cache.
  * @param cache
- * @param value
  * @returns {Promise<void>}
  */
 exports.reUpdateCache = async (cache) => {
