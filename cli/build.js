@@ -116,9 +116,28 @@ exports.buildCommand = async (name) => {
  * @returns {Promise<void>}
  */
 exports.buildRoute = async (name) => {
-    const filePath = path.join(rootPath, "routes", `${name}.route.js`)
+    const filePath = path.join(appPath, "routes", `${name}.route.js`)
 
     if (await builder(filePath, "route.stubs")) {
         console.log(`Route ${name}.route.js created successfully`)
+    }
+}
+
+/**
+ *
+ * @param name
+ * @returns {Promise<void>}
+ */
+exports.buildMail = async (name) => {
+    let repoDir = path.join(rootPath, "mails")
+
+    if (!fs.existsSync(repoDir)) {
+        fs.mkdirSync(repoDir, { recursive: true })
+    }
+
+    const filePath = path.join(repoDir, `${name}.mail.mjml`)
+
+    if (await builder(filePath, "mail.stubs")) {
+        console.log(`Mail ${name}.mail.mjml created successfully`)
     }
 }
