@@ -37,13 +37,32 @@ exports.createTransporter = async () => {
  */
 exports.sendMail = async (template, mailOptions) => {
     let transporter = await this.createTransporter()
+
+    let templateHtml = mjml2html(fs.readFileSync(path.join(rootPath, "../mails", template + ".mail.mjml"), "utf8")).html
+
+    if (!mailOptions.replacer) {
+        mailOptions.replacer = {}
+    }
+
+    if (!mailOptions.to) {
+        throw new Error("to is required")
+    }
+
+    if (!mailOptions.subject) {
+        throw new Error("subject is required")
+    }
+
+    templateHtml = templateHtml.replace(/{{([^}]+)}}/g, function(match, capture) {
+            return mailOptions.replacer[capture]
+        }
+    )
+
     transporter.sendMail(
         {
             from: mailOptions.from || MAILER_FROM,
             to: mailOptions.to.join(", "),
             subject: mailOptions.subject,
-            html: mjml2html(fs.readFileSync(path.join(rootPath, "../mails", template + ".mail.mjml"), "utf8"))
-                .html
+            html: templateHtml
         },
         (error, info) => {
             if (error) {
