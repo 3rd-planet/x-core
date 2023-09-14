@@ -2,6 +2,12 @@ const fs = require("fs")
 const path = require("path")
 const { rootPath, appPath, packagePath } = require("../paths")
 
+/**
+ * Creates a file for the given file path and stub name.
+ * @param filePath
+ * @param stubName
+ * @returns {Promise<void|boolean>}
+ */
 const builder = async (filePath, stubName) => {
     if (fs.existsSync(filePath)) {
         console.log(filePath + ` already exists.`)

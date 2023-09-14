@@ -1,7 +1,7 @@
 const path = require("path")
-const { dirname } = require("path")
-const appDir = dirname(require.main.filename)
+const rootDirectory = path.join(require("app-root-path").path, "/")
 
-exports.rootPath = path.join(appDir + "/")
-exports.packagePath = path.join(appDir, "/node_modules/@3rdplanet/x-core/")
-exports.appPath = path.join(appDir, "/app/")
+exports.rootPath = rootDirectory
+exports.packagePath = path.join(rootDirectory, "node_modules/@3rdplanet/x-core")
+exports.appPath = path.join(rootDirectory, "app")
+exports.modulePath = path.join(rootDirectory, "modules")

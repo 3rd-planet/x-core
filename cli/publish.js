@@ -3,7 +3,7 @@ const path = require("path")
 const { rootPath, packagePath } = require("../paths")
 
 /**
- *
+ * Publishes the stubs to the root/stubs directory.
  * @returns {Promise<void>}
  */
 exports.publishStubs = async () => {

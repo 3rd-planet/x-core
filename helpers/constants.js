@@ -1,5 +1,5 @@
 const { rootPath } = require("../paths")
-let packageJson = require(rootPath + "../package.json")
+let packageJson = require(rootPath + "package.json")
 
 exports.CACHE_ENABLED = process.env.CACHE_ENABLED
 exports.CACHE_UPDATE_INTERVAL = process.env.CACHE_UPDATE_INTERVAL
