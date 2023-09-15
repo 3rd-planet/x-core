@@ -1,7 +1,14 @@
 const path = require("path")
 const { appPath, rootPath, modulePath } = require("../paths")
 const packageJson = require(rootPath + "package.json")
-const activeModules = packageJson.xconfig.modules
+
+/**
+ * Get the active modules from the package.json file.
+ * @returns {string}
+ */
+exports.activeModules = () => {
+    return  packageJson.xconfig.modules
+}
 
 /**
  * Load routes from the app/routes directory and from the modules/<module>/app/routes directory.
@@ -17,6 +24,8 @@ exports.loadRoutes = (app) => {
             name: file.split(".")[0]
         }
     })
+
+    let activeModules = this.activeModules()
 
     if (activeModules.length > 0) {
         for (let i = 0; i < activeModules.length; i++) {
