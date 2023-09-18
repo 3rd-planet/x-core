@@ -38,21 +38,22 @@ exports.createTransporter = async () => {
 exports.sendMail = async (template, mailOptions) => {
     let transporter = await this.createTransporter()
 
-    let templateHtml = mjml2html(
-        fs.readFileSync(path.join(rootPath, "../mails", template + ".mail.mjml"), "utf8")
-    ).html
+    let mjmlTemplate = null
+    mjmlTemplate = mailOptions.module
+        ? path.join(rootPath, "modules", mailOptions.module, "mails", template + ".mail.mjml")
+        : path.join(rootPath, "../mails", template + ".mail.mjml")
 
-    if (!mailOptions.replacer) {
-        mailOptions.replacer = {}
-    }
+    if (!fs.existsSync(mjmlTemplate)) throw new Error("Template not found")
 
-    if (!mailOptions.to) {
-        throw new Error("to is required")
-    }
+    let templateHtml = mjml2html(fs.readFileSync(mjmlTemplate).toString()).html
 
-    if (!mailOptions.subject) {
-        throw new Error("subject is required")
-    }
+    if (!mailOptions.replacer) mailOptions.replacer = {}
+
+    if (!mailOptions.to) throw new Error("to is required")
+
+    mailOptions.to = Array.isArray(mailOptions.to) ? mailOptions.to : [mailOptions.to]
+
+    if (!mailOptions.subject) throw new Error("subject is required")
 
     templateHtml = templateHtml.replace(/{{([^}]+)}}/g, function (match, capture) {
         return mailOptions.replacer[capture]

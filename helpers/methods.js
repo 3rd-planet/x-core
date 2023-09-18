@@ -1,13 +1,14 @@
 const path = require("path")
 const { appPath, rootPath, modulePath } = require("../paths")
 const packageJson = require(rootPath + "package.json")
+const { validationResult } = require("express-validator")
 
 /**
  * Get the active modules from the package.json file.
  * @returns {string}
  */
 exports.activeModules = () => {
-    return  packageJson.xconfig.modules
+    return packageJson.xconfig.modules
 }
 
 /**
@@ -59,4 +60,34 @@ exports.loadRoutes = (app) => {
 
         app.use(`/${routeName}`, route)
     })
+}
+
+/**
+ * sequential processing, stops running a validation chain if the previous one has failed.
+ * @param validations
+ * @returns {function(*=, *=, *): Promise<*>}
+ * @example
+ *  const { validate } = require("../helpers/methods")
+ *  const { indexValidator } = require("../middlewares/validators/index.validations")
+ *  router.post("/", validate(indexValidator), IndexController.indexPost)
+ */
+exports.validate = (validations) => {
+    return async (req, res, next) => {
+        for (let validation of validations) {
+            const result = await validation.run(req)
+            if (result.errors.length) break
+        }
+
+        const errors = validationResult(req)
+        if (errors.isEmpty()) {
+            return next()
+        }
+
+        res.status(parseInt(process.env.VALIDATION_FAIL_CODE)).json({
+            status: false,
+            status_code: parseInt(process.env.VALIDATION_FAIL_CODE),
+            message: "Validation failed",
+            payload: errors.array()
+        })
+    }
 }
