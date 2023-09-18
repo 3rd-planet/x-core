@@ -3,12 +3,13 @@ exports.command = (program) => {
         .command("sample:command")
         .description("Sample Command, Usage: node x sample:command <argument>")
         .argument("<argument>", "Argument")
-        .action(async (argument) => {
-                handel(argument)
+        .option("-o, --option <optionName>", "Option", null)
+        .action(async (argument, option) => {
+                handel(argument, option)
             }
         )
+}
 
-    const handel = (argument) => {
-        console.log(argument)
-    }
+const handel = (argument, option) => {
+    console.log(argument, option)
 }

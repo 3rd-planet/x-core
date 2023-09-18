@@ -1,5 +1,3 @@
-const { successResponse } = require("../helpers/methods")
-
 /**
  *
  * @param req
@@ -7,9 +5,5 @@ const { successResponse } = require("../helpers/methods")
  * @returns {Promise<void>}
  */
 exports.index = async (req, res) => {
-    res.send(
-        successResponse("controller index", {
-            data: "here comes you payload..."
-        })
-    )
+    // TODO: Implement index method
 }

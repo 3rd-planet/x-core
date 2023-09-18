@@ -4,8 +4,10 @@ exports.command = (program) => {
         .command("build:command")
         .description("Build Command, Usage: node x build:command <command-name>")
         .argument("<commandName>", "Command Name")
-        .action(async (commandName) => {
+        .option("-m, --module <modeuleName>", "Build Command in a Module", null)
+        .action(async (commandName, options) => {
             console.log(`Building Command: ${commandName}`)
-            await buildCommand(commandName)
+            await buildCommand(commandName, options)
+            console.log(`Command ${commandName} built successfully`)
         })
 }

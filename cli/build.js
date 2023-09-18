@@ -42,33 +42,33 @@ const builder = async (filePath, stubName) => {
 /**
  * Creates a controller file for the given controller name.
  * @param {string} name - The name of the controller.
+ * @param {object} options - The option object.
  * @returns None
  */
-exports.buildController = async (name) => {
-    const filePath = path.join(appPath, "controllers", `${name}.controller.js`)
-
-    if (await builder(filePath, "controller.stubs")) {
-        console.log(`Controller ${name}.controller.js created successfully`)
-    }
+exports.buildController = async (name, options) => {
+    await builder(
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "app", "controllers", `${name}.controller.js`)
+            : path.join(appPath, "controllers", `${name}.controller.js`),
+        "controller.stubs"
+    )
 }
 
 /**
  * Creates a repository file for the given repository name.
  * @param {string} name - The name of the repository.
+ * @param {object} options - The option object.
  * @returns None
  */
-exports.buildRepository = async (name) => {
-    let repoDir = path.join(appPath, "repositories")
+exports.buildRepository = async (name, options) => {
+    let repoDir =
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "app", "repositories")
+            : path.join(appPath, "repositories")
 
-    if (!fs.existsSync(repoDir)) {
-        fs.mkdirSync(repoDir, { recursive: true })
-    }
+    if (!fs.existsSync(repoDir)) fs.mkdirSync(repoDir, { recursive: true })
 
-    const filePath = path.join(repoDir, `${name}.repository.js`)
-
-    if (await builder(filePath, "repository.stubs")) {
-        console.log(`Repository ${name}.repository.js created successfully`)
-    }
+    await builder(path.join(repoDir, `${name}.repository.js`), "repository.stubs")
 }
 
 /**
@@ -99,21 +99,19 @@ exports.buildMiddleware = async (name) => {
 
 /**
  * Creates a command file for the given command name.
- * @param name
+ * @param name - The name of the command.
+ * @param options - The option object.
  * @returns {Promise<void>}
  */
-exports.buildCommand = async (name) => {
-    let repoDir = path.join(appPath, "commands")
+exports.buildCommand = async (name, options) => {
+    let repoDir =
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "app", "commands")
+            : path.join(appPath, "commands")
 
-    if (!fs.existsSync(repoDir)) {
-        fs.mkdirSync(repoDir, { recursive: true })
-    }
+    if (!fs.existsSync(repoDir)) fs.mkdirSync(repoDir, { recursive: true })
 
-    const filePath = path.join(repoDir, `${name}.js`)
-
-    if (await builder(filePath, "command.stubs")) {
-        console.log(`Command ${name}.js created successfully`)
-    }
+    await builder(path.join(repoDir, `${name}.js`), "command.stubs")
 }
 
 /**
