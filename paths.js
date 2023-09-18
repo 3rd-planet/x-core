@@ -1,8 +1,6 @@
 const path = require("path")
 const fs = require("fs")
 
-console.log("Root Directory: ", require("process").env.npm_config_local_prefix)
-
 const rootDirectory = path.join(require("process").env.npm_config_local_prefix, "/")
 
 exports.rootPath = rootDirectory

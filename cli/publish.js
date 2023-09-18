@@ -1,6 +1,6 @@
 const fs = require("fs")
 const path = require("path")
-const { rootPath, packagePath } = require("../paths")
+const { rootPath, packagePath } = require("./paths")
 
 /**
  * Publishes the stubs to the root/stubs directory.

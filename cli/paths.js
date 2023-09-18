@@ -1,10 +1,11 @@
 const paths = require("path")
 const fs = require("fs")
 
+// production
 //let rootPath = paths.join(__dirname, "..", "..", "..")
-let rootPath = paths.join(__dirname, "..", "..", "framework-x")
 
-console.log("Root Directory: ", rootPath)
+// development
+let rootPath = paths.join(__dirname, "..", "..", "framework-x")
 
 const rootDirectory = rootPath
 
