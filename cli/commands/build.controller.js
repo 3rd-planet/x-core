@@ -1,4 +1,4 @@
-const { buildController } = require("../cli/build")
+const { buildController } = require("../build")
 
 exports.command = (program) => {
     program

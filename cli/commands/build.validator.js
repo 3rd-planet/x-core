@@ -1,4 +1,4 @@
-const { buildValidator } = require("../cli/build")
+const { buildValidator } = require("../build")
 exports.command = (program) => {
     program
         .command("build:validator")

@@ -1,4 +1,4 @@
-const { buildMiddleware } = require("../cli/build")
+const { buildMiddleware } = require("../build")
 exports.command = (program) => {
     program
         .command("build:middleware")

@@ -1,6 +1,6 @@
 const fs = require("fs")
 const path = require("path")
-const { rootPath, appPath, packagePath } = require("../paths")
+const { rootPath, appPath, packagePath } = require("./paths")
 
 /**
  * Creates a file for the given file path and stub name.

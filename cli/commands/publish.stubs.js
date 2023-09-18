@@ -1,4 +1,4 @@
-const { publishStubs } = require("../cli/publish")
+const { publishStubs } = require("../publish")
 exports.command = (program) => {
     program
         .command("publish:stubs")

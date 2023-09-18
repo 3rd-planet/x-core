@@ -1,4 +1,4 @@
-const { buildRepository } = require("../cli/build")
+const { buildRepository } = require("../build")
 exports.command = (program) => {
     program
         .command("build:repository")

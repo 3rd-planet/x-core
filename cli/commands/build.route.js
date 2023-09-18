@@ -1,4 +1,4 @@
-const { buildRoute } = require("../cli/build")
+const { buildRoute } = require("../build")
 
 exports.command = (program) => {
     program

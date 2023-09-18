@@ -1,25 +1,20 @@
 const fs = require("fs")
 const path = require("path")
+const { rootPath, appPath, packagePath } = require("./paths")
 
 /**
  * Initializes the program.
  * @param program - The program object.
- * @param rootPath - The root path of the project.
  * @returns none
  */
-exports.init = async (program, rootPath) => {
-    console.log(rootPath)
-
+exports.init = async (program) => {
     const packageJson = require(rootPath + "/package.json")
 
     program.name("x").description("CLI Commands for framework x").version(packageJson.version)
 
-    let packagePath = path.join(rootPath, "node_modules/@3rdplanet/x-core")
-    let appPath = path.join(rootPath, "app")
-
-    let commands = require("fs").readdirSync(packagePath + "/commands")
+    let commands = require("fs").readdirSync(packagePath + "/cli/commands")
     commands.forEach((command) => {
-        require(packagePath + "/commands/" + command).command(program)
+        require(packagePath + "/cli/commands/" + command).command(program)
     })
 
     if (fs.existsSync(appPath + "/commands")) {

@@ -1,4 +1,4 @@
-const { buildMail } = require("../cli/build")
+const { buildMail } = require("../build")
 exports.command = (program) => {
     program
         .command("build:mail")
