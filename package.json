@@ -2,9 +2,7 @@
     "name": "@3rdplanet/x-core",
     "version": "1.7.1",
     "description": "core for framework-x",
-    "main": "cli/index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
         "lint": "prettier --write ."
     },
     "repository": {
