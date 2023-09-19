@@ -2,6 +2,6 @@ const { body } = require("express-validator")
 
 /**
  *
- * @type {ValidationChain[]}
+ * @type {(*)[]}
  */
 exports.indexValidator = [body("key").exists().withMessage("key is required")]

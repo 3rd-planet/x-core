@@ -11,7 +11,7 @@ const { rootPath, appPath, packagePath } = require("./paths")
 const builder = async (filePath, stubName) => {
     if (fs.existsSync(filePath)) {
         console.log(filePath + ` already exists.`)
-        return false
+        process.exit(1)
     }
 
     let userStubsFile = path.join(rootPath, "stubs", stubName)
@@ -29,13 +29,7 @@ const builder = async (filePath, stubName) => {
     }
 
     return fs.writeFile(filePath, stub, (err) => {
-        if (err) {
-            console.log(err)
-
-            return false
-        }
-
-        return true
+        if (err) console.log(err)
     })
 }
 
@@ -73,28 +67,40 @@ exports.buildRepository = async (name, options) => {
 
 /**
  * Creates a validator file for the given validator name.
- * @param name
+ * @param name - The name of the validator.
+ * @param options - The option object.
  * @returns {Promise<void>}
  */
-exports.buildValidator = async (name) => {
-    const filePath = path.join(appPath, "middlewares/validators", `${name}.validations.js`)
+exports.buildValidator = async (name, options) => {
+    const filePath =
+        options.module !== null
+            ? path.join(
+                  rootPath,
+                  "modules",
+                  options.module,
+                  "app",
+                  "middlewares",
+                  "validators",
+                  `${name}.validations.js`
+              )
+            : path.join(appPath, "middlewares", "validators", `${name}.validations.js`)
 
-    if (await builder(filePath, "validator.stubs")) {
-        console.log(`Validator ${name}.validation.js created successfully`)
-    }
+    await builder(filePath, "validator.stubs")
 }
 
 /**
  * Creates a middleware file for the given middleware name.
- * @param name
+ * @param name - The name of the middleware.
+ * @param options - The option object.
  * @returns {Promise<void>}
  */
-exports.buildMiddleware = async (name) => {
-    const filePath = path.join(appPath, "middlewares", `${name}.middleware.js`)
+exports.buildMiddleware = async (name, options) => {
+    const filePath =
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "app", "middlewares", `${name}.middleware.js`)
+            : path.join(appPath, "middlewares", `${name}.middleware.js`)
 
-    if (await builder(filePath, "middleware.stubs")) {
-        console.log(`Middleware ${name}.middleware.js created successfully`)
-    }
+    await builder(filePath, "middleware.stubs")
 }
 
 /**
@@ -116,32 +122,32 @@ exports.buildCommand = async (name, options) => {
 
 /**
  * Creates a route file for the given route name.
- * @param name
+ * @param name - The name of the route.
+ * @param options - The option object.
  * @returns {Promise<void>}
  */
-exports.buildRoute = async (name) => {
-    const filePath = path.join(appPath, "routes", `${name}.route.js`)
+exports.buildRoute = async (name, options) => {
+    const filePath =
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "app", "routes", `${name}.route.js`)
+            : path.join(appPath, "routes", `${name}.route.js`)
 
-    if (await builder(filePath, "route.stubs")) {
-        console.log(`Route ${name}.route.js created successfully`)
-    }
+    await builder(filePath, "route.stubs")
 }
 
 /**
- *
- * @param name
+ * Creates a Mail file
+ * @param name - The name of the model.
+ * @param options - The option object.
  * @returns {Promise<void>}
  */
-exports.buildMail = async (name) => {
-    let repoDir = path.join(rootPath, "mails")
+exports.buildMail = async (name, options) => {
+    let repoDir =
+        options.module !== null
+            ? path.join(rootPath, "modules", options.module, "mails")
+            : path.join(rootPath, "mails")
 
-    if (!fs.existsSync(repoDir)) {
-        fs.mkdirSync(repoDir, { recursive: true })
-    }
+    if (!fs.existsSync(repoDir)) fs.mkdirSync(repoDir, { recursive: true })
 
-    const filePath = path.join(repoDir, `${name}.mail.mjml`)
-
-    if (await builder(filePath, "mail.stubs")) {
-        console.log(`Mail ${name}.mail.mjml created successfully`)
-    }
+    await builder(path.join(repoDir, `${name}.mail.mjml`), "mail.stubs")
 }
