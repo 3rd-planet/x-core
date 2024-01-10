@@ -2,6 +2,7 @@ const path = require("path")
 const { appPath, rootPath, modulePath } = require("../paths")
 const packageJson = require(rootPath + "package.json")
 const { validationResult } = require("express-validator")
+const figlet = require("figlet")
 
 /**
  * Get the active modules from the package.json file.
@@ -90,4 +91,22 @@ exports.validate = (validations) => {
             payload: errors.array()
         })
     }
+}
+
+/**
+ * This function prints a stylized text "X CLI" to the console.
+ * It uses the `figlet` library to generate ASCII art from the text.
+ * The layout options for the ASCII art are set to "default".
+ *
+ * @example
+ *  const { cliWatermark } = require("../helpers/methods")
+ *  cliWatermark()
+ */
+exports.cliWatermark = () => {
+    console.log(
+        figlet.textSync("X CLI", {
+            horizontalLayout: "default",
+            verticalLayout: "default"
+        })
+    )
 }
