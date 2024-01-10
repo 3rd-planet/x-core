@@ -7,14 +7,14 @@ const { validationResult } = require("express-validator")
 
 /**
  * Get the active modules from the package.json file.
- * @returns {string}
+ * @returns {object}
  */
 exports.activeModules = () => {
-    if (packageJson.xconfig) {
+    if (packageJson.xconfig.modules) {
         return packageJson.xconfig.modules
     }
 
-    return false
+    return {}
 }
 
 /**
