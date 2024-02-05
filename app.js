@@ -3,14 +3,20 @@ require("express-async-errors")
 const { loadRoutes } = require("./helpers/methods")
 
 const express = require("express")
+const helmet = require("helmet")
+const cors = require("cors")
 
 /**
- *
- * @type {Express}
+ * Create a new express app.
  */
 const app = express()
 
-const cors = require("cors")
+/**
+ * Enable helmet for all routes. You can change this to only allow specific origins.
+ * See helmet documentation for more info.
+ * @see https://www.npmjs.com/package/helmet
+ */
+app.use(helmet());
 
 /**
  * Enable cors for all routes and origins. You can change this to only allow specific origins.
